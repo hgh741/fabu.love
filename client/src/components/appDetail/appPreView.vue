@@ -26,7 +26,7 @@
               <p v-if="this.appVersionInfo.versionStr" class="desc">版本：{{this.appVersionInfo.versionStr}}</p><span>大小：{{(this.appVersionInfo.size/1024/1024).toFixed(1)}}M</span>
             </div>
             <div class="info">
-              <p class="desc">发布日期：{{this.appVersionInfo.creatDateStr}}</p><span>更新日志：{{this.appVersionInfo.changelog}}</span>
+              <p class="date">发布日期：{{this.appVersionInfo.creatDateStr}}</p><span>更新日志：{{this.appVersionInfo.changelog}}</span>
             </div>
             <div v-if="showPasswordInput">
               <el-input v-model="pwd" type="password" placeholder="请输入密码" class="pwd"></el-input>
