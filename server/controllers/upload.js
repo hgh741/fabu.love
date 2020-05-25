@@ -62,18 +62,22 @@ module.exports = class UploadRouter {
             type: 'file',
             required: 'true',
             description: 'upload file, get url'
+        },
+        changeLog: {
+            type: 'string'
         }
     })
     @rpath({ teamId: { type: 'string', required: true } })
     @middlewares([upload.single('file')])
     static async upload(ctx, next) {
         var file = ctx.req.file
+        var changelog = ctx.req.body.changeLog
         const { teamId } = ctx.validatedParams;
         var team = await Team.findById(teamId)
         if (!team) {
             throw new Error("没有找到该团队")
         }
-        var result = await parseAppAndInsertToDB(file, ctx.state.user.data, team);
+        var result = await parseAppAndInsertToDB(file, ctx.state.user.data, team, changelog);
         await Version.updateOne({ _id: result.version._id }, {
             released: result.app.autoPublish
         })
@@ -100,7 +104,7 @@ module.exports = class UploadRouter {
     }
 }
 
-async function parseAppAndInsertToDB(file, user, team) {
+async function parseAppAndInsertToDB(file, user, team, changelog) {
     var filePath = file.path
     var parser, extractor;
     if (path.extname(filePath) === ".ipa") {
@@ -146,6 +150,7 @@ async function parseAppAndInsertToDB(file, user, team) {
         } else {
             version.installUrl = info.downloadUrl
         }
+        version.changelog = changelog
         await version.save()
         return { 'app': app, 'version': version }
     }
@@ -161,6 +166,7 @@ async function parseAppAndInsertToDB(file, user, team) {
         } else {
             version.installUrl = `${config.baseUrl}/${info.downloadUrl}`
         }
+        version.changelog = changelog
         await version.save()
         return { 'app': app, 'version': version }
     } else {
