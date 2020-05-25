@@ -155,7 +155,7 @@ async function parseAppAndInsertToDB(file, user, team, changelog) {
         return { 'app': app, 'version': version }
     }
     var version = await Version.findOne({ appId: app.id, versionCode: info.versionCode })
-    if (!version) {
+    // if (!version) {
         info.uploader = user.username;
         info.uploaderId = user._id;
         info.size = fs.statSync(fileRealPath).size
@@ -169,12 +169,12 @@ async function parseAppAndInsertToDB(file, user, team, changelog) {
         version.changelog = changelog
         await version.save()
         return { 'app': app, 'version': version }
-    } else {
-        let err = Error()
-        err.code = 408
-        err.message = '当前版本已存在'
-        throw err
-    }
+    // } else {
+    //     let err = Error()
+    //     err.code = 408
+    //     err.message = '当前版本已存在'
+    //     throw err
+    // }
 }
 
 ///映射可安装的app下载地址
