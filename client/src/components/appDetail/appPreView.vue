@@ -23,7 +23,10 @@
           <div class="info">
             <p v-if="this.appVersionInfo.versionStr" class="desc">版本：{{this.appVersionInfo.versionStr}}</p><span>大小：{{(this.appVersionInfo.size/1024/1024).toFixed(1)}}M</span>
           </div>
-          <p class="date">发布日期： {{ this.appVersionInfo.creatDateStr }} </p>
+          <div class="info">
+            <p class="desc">更新日志：{{this.appVersionInfo.changelog}}</p>
+          </div>
+          <p class="date">发布日期：{{ this.appVersionInfo.creatDateStr }}</p>
           <div v-if="showPasswordInput">
             <el-input v-model="pwd" type="password" placeholder="请输入密码" class="pwd"></el-input>
             <el-button @click="clickSure" type="primary" round class="downloadBtn">确定</el-button>
@@ -126,7 +129,7 @@
           let releaseDate = new Date(this.appVersionInfo.uploadAt)
           this.downloadUrl = `${window.origin}${this.$route.fullPath}`
           this.platformStr = res.data.app.platform
-          this.appVersionInfo.creatDateStr = `${releaseDate.getFullYear()}-${releaseDate.getMonth() + 1}-${releaseDate.getDate()}`
+          this.appVersionInfo.creatDateStr = `${releaseDate.getFullYear()}-${releaseDate.getMonth() + 1}-${releaseDate.getDate()} ${releaseDate.getHours()}:${releaseDate.getMinutes()}:${releaseDate.getSeconds()}`
           if (this.appBaseData.installPwd === 1) {
             this.installWithPwd = true
           } else {
