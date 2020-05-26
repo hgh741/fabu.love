@@ -1,60 +1,54 @@
-
-
 <template>
-    <div class="previewapp-wrapper">
-      <!--中间-->
-      <div :class="getContentClass()" v-if="this.appBaseData">
-        <div :class="getLeftClass()">
-          <!--手机上查看-->
-          <div v-show="isPhone">
-            <p>手机</p>
-            <phoneWrapper
-              :appBaseData="appBaseData"
-              :appVersionInfo="appVersionInfo"
-              :platformStr="platformStr"
-              @clickDownLoadBtn="clickDownLoadBtn"
-            ></phoneWrapper>
-          </div>
-
-
-          <!--pc上查看-->
-          <div class="pcWrapper" v-show="!isPhone">
-            <p>33333333</p>
-            <img class="appicon" :src="getIconUrl()" alt="">
-            <p class="title">{{this.appBaseData.appName}}</p>
-            <div class="info">
-              <p v-if="this.appVersionInfo.versionStr" class="desc">版本：{{this.appVersionInfo.versionStr}}</p><span>大小：{{(this.appVersionInfo.size/1024/1024).toFixed(1)}}M</span>
-            </div>
-            <div class="info">
-              <p>更新日志：{{this.appVersionInfo.changelog}}</p>
-            </div>
-            <p class="date">发布日期：{{this.appVersionInfo.creatDateStr}}</p>
-            <div v-if="showPasswordInput">
-              <el-input v-model="pwd" type="password" placeholder="请输入密码" class="pwd"></el-input>
-              <el-button @click="clickSure" type="primary" round class="downloadBtn">确定</el-button>
-            </div>
-
-            <el-button v-if="showDownLoadBtn" @click="clickDownLoadBtn" class="downloadBtn" type="primary" round><i :class="this.platformStr === 'ios' ? 'icon-ic_ios':'icon-ic_andr'"></i>    下载安装</el-button>
-          </div>
+  <div class="previewapp-wrapper">
+    <!--中间-->
+    <div :class="getContentClass()" v-if="this.appBaseData">
+      <div :class="getLeftClass()">
+        <!--手机上查看-->
+        <div v-show="isPhone">
+          <p>手机</p>
+          <phoneWrapper
+            :appBaseData="appBaseData"
+            :appVersionInfo="appVersionInfo"
+            :platformStr="platformStr"
+            @clickDownLoadBtn="clickDownLoadBtn"
+          ></phoneWrapper>
         </div>
 
 
-        <!--右侧二维码-->
-        <div class="preview-mobilewrapper" v-show="!isPhone">
-          <img class="mobieImg" src='../../assets/ic_mobilphone.png'>
-          <vue-qr class="qrcodeImg" :text="downloadUrl" :margin="20"></vue-qr>
-          <p class="codetips">请扫描二维码下载APP</p>
-          <p class="platform">适用于{{this.platformStr}}系统</p>
+        <!--pc上查看-->
+        <div class="pcWrapper" v-show="!isPhone">
+          <p>33333333</p>
+          <img class="appicon" :src="getIconUrl()" alt="">
+          <p class="title">{{this.appBaseData.appName}}</p>
+          <div class="info">
+            <p v-if="this.appVersionInfo.versionStr" class="desc">版本：{{this.appVersionInfo.versionStr}}</p><span>大小：{{(this.appVersionInfo.size/1024/1024).toFixed(1)}}M</span>
+          </div>
+          <p class="date">发布日期： {{ this.appVersionInfo.creatDateStr }} </p>
+          <div v-if="showPasswordInput">
+            <el-input v-model="pwd" type="password" placeholder="请输入密码" class="pwd"></el-input>
+            <el-button @click="clickSure" type="primary" round class="downloadBtn">确定</el-button>
+          </div>
+
+          <el-button v-if="showDownLoadBtn" @click="clickDownLoadBtn" class="downloadBtn" type="primary" round><i :class="this.platformStr === 'ios' ? 'icon-ic_ios':'icon-ic_andr'"></i>    下载安装</el-button>
         </div>
       </div>
+
+
+      <!--右侧二维码-->
+      <div class="preview-mobilewrapper" v-show="!isPhone">
+        <img class="mobieImg" src='../../assets/ic_mobilphone.png'>
+        <vue-qr class="qrcodeImg" :text="downloadUrl" :margin="20"></vue-qr>
+        <p class="codetips">请扫描二维码下载APP</p>
+        <p class="platform">适用于{{this.platformStr}}系统</p>
+      </div>
     </div>
+  </div>
 </template>
 
 <script type="text/ecmascript-6">
   import * as AppResourceApi from '../../api/moudle/appResourceApi'
   import VueQr from 'vue-qr'
   import PhoneWrapper from './phoneWrapper.vue'
-
   export default {
     components: {
       VueQr, PhoneWrapper
@@ -92,17 +86,15 @@
             return false
           }
         }
-
       },
       showPasswordInput() {
-          if (this.appBaseData.installWithPwd === 1 && this.pwd !== this.appBaseData.installPwd) { // 密码安装,且密码不对的情况下展示，其他情况都隐藏
-              return true
-          }
+        if (this.appBaseData.installWithPwd === 1 && this.pwd !== this.appBaseData.installPwd) { // 密码安装,且密码不对的情况下展示，其他情况都隐藏
+          return true
+        }
       }
     },
     mounted() {
       this.getAppInfo(this.$route.params.id)
-
       // 判断是否是手机设备
       if (this.isIos || this.isAndroid) {
         this.isPhone = true
@@ -113,7 +105,6 @@
     created() {
       this.$nextTick(() => {
       })
-
     },
     methods: {
       getTableBackground(index) {
@@ -127,8 +118,8 @@
         AppResourceApi.getAppInfoByShortUrl(shortUrl).then((res) => {
           console.log(res)
           if (res.data.version === null) {
-              this.$message.error('未检测到版本信息')
-              return
+            this.$message.error('未检测到版本信息')
+            return
           }
           this.appVersionInfo = res.data.version
           this.appBaseData = res.data.app
@@ -141,7 +132,6 @@
           } else {
             this.installWithPwd = false
           }
-
         }, reject => {
           this.$message.error('服务器错误')
         })
@@ -172,7 +162,6 @@
                 console.log(_this.appBaseData)
                 AppResourceApi.downloadedCount(_this.appBaseData._id, _this.appVersionInfo._id).then(() => {
                 }, reject => {
-
                 })
                 return
               }
@@ -256,7 +245,6 @@
     position: relative;
     text-align: center;
   }
-
   .preview-mobilewrapper > img {
     margin-top: 120px;
     width: 300px;
@@ -264,7 +252,6 @@
     left: 0px;
     height: auto;
   }
-
   .pcWrapper .appicon {
     width: 126px;
     height: 126px;
@@ -326,7 +313,6 @@
     left: 32px;
     margin-top: 200px;
   }
-
   .preview-mobilewrapper .codetips {
     color: #354052;
     font-size: 14px;
@@ -348,7 +334,6 @@
     top: 400px;
     position: absolute;
   }
-
   /*手机样式*/
   .preview-middlewrapper-forPhone {
     margin-top: 0px;
