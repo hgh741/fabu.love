@@ -7,8 +7,8 @@
       </div>
       <div class="info">
         <p v-if="this.appVersionInfo.changelog" class="desc">更新日志：{{this.appVersionInfo.changelog}}</p>
+        <p class="date">发布日期：{{this.appVersionInfo.creatDateStr}}</p>
       </div>
-      <p class="date">发布日期：{{this.appVersionInfo.creatDateStr}}</p>
       <div v-if="!showDownLoadBtn">
         <div>
           <el-input v-model="pwd" type="password" placeholder="请输入密码" class="pwd"></el-input>
